@@ -4,25 +4,21 @@
 
 using namespace std;
 
-LinkedList::Node::Node(const ValueType& value, Node* next)
-{
+LinkedList::Node::Node(const ValueType& value, Node* next){
 	this->value = value;
 	this->next = next;
 }
 
-LinkedList::Node::~Node()
-{
+LinkedList::Node::~Node(){
 	// ничего не удаляем, т.к. агрегация
 }
 
-void LinkedList::Node::insertNext(const ValueType& value)
-{
+void LinkedList::Node::insertNext(const ValueType& value){
 	Node* newNode = new Node(value, this->next);
 	this->next = newNode;
 }
 
-void LinkedList::Node::removeNext()
-{
+void LinkedList::Node::removeNext(){
 	Node* removeNode = this->next;
 	Node* newNext = removeNode->next;
 	delete removeNode;
@@ -35,26 +31,24 @@ _head(nullptr), _size(0)
 
 }
 
-LinkedList::LinkedList(const LinkedList& copyList)
-{
-	this->_size = copyList._size;
-	if (this->_size == 0) {
-		this->_head = nullptr;
-		return;
-	}
+LinkedList::LinkedList(const LinkedList& copyList){
+    this->_size = copyList._size;
+    if (this->_size == 0){
+        this->_head = nullptr;
+        return;
+    }
     this->_head = new Node(copyList._head->value);
-	Node* currentNode = this->_head;
-	Node* currentCopyNode = copyList._head;
-	while (currentCopyNode->next) {
-		currentNode->next = new Node(currentCopyNode->value);
-		currentCopyNode = currentCopyNode->next;
-		currentNode = currentNode->next;
-	}
+    Node* currentNode = this->_head;
+    Node* currentCopyNode = copyList._head->next;
+    while (currentCopyNode){
+        currentNode->next = new Node(currentCopyNode->value);
+        currentCopyNode = currentCopyNode->next;
+        currentNode = currentNode->next;
+    }
 }
 
-LinkedList& LinkedList::operator=(const LinkedList& copyList)
-{
-	if (this == &copyList) {
+LinkedList& LinkedList::operator=(const LinkedList& copyList){
+	if (this == &copyList){
 		return *this;
 	}
 	LinkedList bufList(copyList);
@@ -63,17 +57,15 @@ LinkedList& LinkedList::operator=(const LinkedList& copyList)
 	return *this;
 }
 
-LinkedList::LinkedList(LinkedList&& moveList) noexcept
-{
+LinkedList::LinkedList(LinkedList&& moveList) noexcept{
 	this->_size = moveList._size;
 	this->_head = moveList._head;
 	moveList._size = 0;
 	moveList._head = nullptr;
 }
 
-LinkedList& LinkedList::operator=(LinkedList&& moveList) noexcept
-{
-	if (this == &moveList) {
+LinkedList& LinkedList::operator=(LinkedList&& moveList) noexcept{
+	if (this == &moveList){
 		return *this;
 	}
 	forceNodeDelete(_head);
@@ -84,18 +76,15 @@ LinkedList& LinkedList::operator=(LinkedList&& moveList) noexcept
 	return *this;
 }
 
-LinkedList::~LinkedList()
-{
+LinkedList::~LinkedList(){
 	forceNodeDelete(_head);
 }
 
-ValueType& LinkedList::operator[](const size_t pos) const
-{
+ValueType& LinkedList::operator[](const size_t pos) const{
 	return getNode(pos)->value;
 }
 
-LinkedList::Node* LinkedList::getNode(const size_t pos) const
-{
+LinkedList::Node* LinkedList::getNode(const size_t pos) const{
 	if (pos < 0) {
 		assert(pos < 0);
 	}
@@ -109,8 +98,7 @@ LinkedList::Node* LinkedList::getNode(const size_t pos) const
 	return bufNode;
 }
 
-void LinkedList::insert(const size_t pos, const ValueType& value)
-{
+void LinkedList::insert(const size_t pos, const ValueType& value){
 	if (pos < 0) {
 		assert(pos < 0);
 	}
@@ -130,14 +118,12 @@ void LinkedList::insert(const size_t pos, const ValueType& value)
 	}
 }
 
-void LinkedList::insertAfterNode(Node* node, const ValueType& value)
-{
+void LinkedList::insertAfterNode(Node* node, const ValueType& value){
 	node->insertNext(value);
 	_size++;
 }
 
-void LinkedList::pushBack(const ValueType& value)
-{
+void LinkedList::pushBack(const ValueType& value){
 	if (_size == 0) {
 		pushFront(value);
 		return;
@@ -145,37 +131,30 @@ void LinkedList::pushBack(const ValueType& value)
 	insert(_size, value);
 }
 
-void LinkedList::pushFront(const ValueType& value)
-{
+void LinkedList::pushFront(const ValueType& value){
 	_head = new Node(value, _head);
 	++_size;
 }
 
-void LinkedList::remove(const size_t pos)
-{
-    if(_head)
-        {
-        if(pos != 0)
-        {
+void LinkedList::remove(const size_t pos){
+    if(_head){
+        if(pos != 0){
             int counter = 0;
             Node *tmp = _head;
-            while(counter <= pos)
-            {
+            while(counter <= pos){
                 tmp = tmp->next;
                 counter++;
             }
             counter=0;
             Node *nd = _head;
-            while(counter < pos-1)
-            {
+            while(counter < pos-1){
                 nd = nd->next;
                 counter++;
             }
             _size--;
             nd->next = tmp;
         }
-        else
-        {
+        else{
             Node *tmp = _head;
             tmp = tmp->next;
             delete _head;
@@ -187,18 +166,15 @@ void LinkedList::remove(const size_t pos)
         cout<<"The list is empty!" << endl;
 }
 
-void LinkedList::removeNextNode(Node* node)
-{
+void LinkedList::removeNextNode(Node* node){
     Node* removeNode = node->next; 
     node->next = node->next->next; 
     delete removeNode; 
     _size--; 
 }
 
-void LinkedList::removeFront()
-{
-    if(_head)
-        {
+void LinkedList::removeFront(){
+    if(_head){
             Node *tmp = _head;
             tmp = tmp->next;
             delete _head;
@@ -209,27 +185,22 @@ void LinkedList::removeFront()
         cout << "The list is empty!" << endl;    
 }
 
-void LinkedList::removeBack()
-{
-     if(_head)
-        {
+void LinkedList::removeBack(){
+     if(_head){
         Node *tmp = _head;
-        Node *nd;
-        while(tmp->next!=NULL)
-            {
+        Node *nd = _head;
+        while(tmp->next!=nullptr){
                 nd = tmp;
                 tmp = tmp->next;
                 
             }
-        nd->next = NULL;
-        
+        nd->next = nullptr;
         delete tmp;
         _size--;
         }  
 }
 
-long long int LinkedList::findIndex(const ValueType& value) const
-{
+long long int LinkedList::findIndex(const ValueType& value) const{
     Node* tmp = _head; 
     size_t i = 0; 
     size_t j = 0; 
@@ -247,8 +218,7 @@ long long int LinkedList::findIndex(const ValueType& value) const
     } 
 }
 
-LinkedList::Node* LinkedList::findNode(const ValueType& value) const
-{
+LinkedList::Node* LinkedList::findNode(const ValueType& value) const{
     size_t i = 0; 
     size_t j = 0; 
     Node* tmp = _head; 
@@ -265,13 +235,11 @@ LinkedList::Node* LinkedList::findNode(const ValueType& value) const
     return nullptr; 
 }
 
-void LinkedList::reverse()
-{
+void LinkedList::reverse(){
     Node *tmp = _head;
-    Node *next = NULL;
-    Node *last = NULL;
-    while(tmp)
-    {
+    Node *next = nullptr;
+    Node *last = nullptr;
+    while(tmp){
         next = tmp->next;
         tmp->next = last;
         last = tmp;
@@ -280,8 +248,7 @@ void LinkedList::reverse()
     _head = last;
 }
 
-LinkedList LinkedList::reverse() const
-{
+LinkedList LinkedList::reverse() const{
     if(_size == 0){
         return LinkedList();
     }
@@ -292,8 +259,7 @@ LinkedList LinkedList::reverse() const
     }
 }
 
-LinkedList LinkedList::getReverseList() const
-{
+LinkedList LinkedList::getReverseList() const{
 	if(_size == 0){
         return LinkedList();
     }
@@ -304,13 +270,11 @@ LinkedList LinkedList::getReverseList() const
     }
 }
 
-size_t LinkedList::size() const
-{
+size_t LinkedList::size() const{
 	return _size;
 }
 
-void LinkedList::forceNodeDelete(Node* node)
-{
+void LinkedList::forceNodeDelete(Node* node){
 	if (node == nullptr) {
 		return;
 	}
@@ -318,23 +282,3 @@ void LinkedList::forceNodeDelete(Node* node)
 	delete node;
 	forceNodeDelete(nextDeleteNode);
 }
-
-int main(){
-    LinkedList l;
-	l.pushBack(1);
-	l.pushFront(0);
-	l.pushBack(2);
-	cout << "Stage 1: "; for(size_t i = 0; i < l.size(); ++i, cout << " ") cout << l[i];; cout << endl;
-	l.insert(1, 10);
-	cout << "Stage 2: "; for(size_t i = 0; i < l.size(); ++i, cout << " ") cout << l[i];; cout << endl;
-	l.remove(1);
-	cout << "Stage 2: "; for(size_t i = 0; i < l.size(); ++i, cout << " ") cout << l[i];; cout << endl;
-	l.reverse();
-	cout << "Stage 3: "; for(size_t i = 0; i < l.size(); ++i, cout << " ") cout << l[i];; cout << endl;
-	l.removeBack();
-	cout << "Stage 4: "; for(size_t i = 0; i < l.size(); ++i, cout << " ") cout << l[i];; cout << endl;
-	l.removeFront();
-	cout << "Stage 5: "; for(size_t i = 0; i < l.size(); ++i, cout << " ") cout << l[i];; cout << endl;
-	return 0;
-    
-};
