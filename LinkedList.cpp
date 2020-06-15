@@ -54,6 +54,7 @@ LinkedList& LinkedList::operator=(const LinkedList& copyList) {
 		return *this;
 	}
 	LinkedList* bufList = new LinkedList(copyList);
+	forceNodeDelete(_head);
 	this->_size = bufList->_size;
 	this->_head = bufList->_head;
 	return *this;
